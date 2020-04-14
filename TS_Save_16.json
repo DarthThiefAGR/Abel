@@ -3,14 +3,14 @@
   "GameMode": "Cards",
   "Gravity": 0.5,
   "PlayArea": 0.5,
-  "Date": "4/14/2020 12:56:00 PM",
+  "Date": "4/14/2020 1:30:17 PM",
   "Table": "Table_Custom_Square",
   "TableURL": "http://cloud-3.steamusercontent.com/ugc/1020570631714070622/4D6023DDFC41030B3C3CBD78B4E76EB387ABFFD3/",
   "Sky": "Sky_Regal",
   "Note": "",
   "Rules": "",
   "XmlUI": "<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->",
-  "LuaScript": "function onLoad()\n\n    -- INCLUDES\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Funciones/resetear_mesa\nfunction reset_table()\r\n\r\n  --ronda = contador_ronda.getvalue()\r\n  ronda = 0\r\n  \r\n  if ronda >= 1 then\r\n\r\n  -- PONEMOS PUNTOS DE CONTADORES DE CANASTAS A CERO\r\n  contador_puntos_canastas_E1.setValue(0)\r\n  contador_puntos_canastas_E2.setValue(0)\r\n\r\n  -- PASAMOS DE RONDA\r\n  contador_ronda.setValue(ronda+1)\r\n\r\n  elseif ronda == 0 then\r\n\r\n    -- PONEMOS PUNTOS DE TODOS LOS CONTADORES A CERO\r\n    contador_puntos_canastas_E1.setValue(0)\r\n    contador_puntos_canastas_E2.setValue(0)\r\n    contador_puntos_total_E1.setValue(0)\r\n    contador_puntos_total_E2.setValue(0)\r\n\r\n    -- PONEMOS RONDA A CERO\r\n    contador_ronda.setValue(0)\r\n\r\n  end\r\n\r\n  -- RESETEAMOS COLORES DE BASES DE CANASTA\r\n  bloque_canasta_E1_C01.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C02.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C03.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C04.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C05.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C06.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C07.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C08.setColorTint({0.7,0.7,0.7})\r\n\r\n  bloque_canasta_E2_C01.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C02.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C03.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C04.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C05.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C06.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C07.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C08.setColorTint({0.7,0.7,0.7})\r\n\r\nend\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Funciones/resetear_mesa\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Funciones/colocar_cartas\nfunction colocarFloresEnZona(nObjetosActual,zona)\r\n\r\n  local objectsInZone = zona.getObjects()\r\n  local nObjetos      = #objectsInZone\r\n  local posicionCarta = {}\r\n  local rotation      = zona.getRotation()\r\n  local posicionZonai = zona.getPosition()\r\n\r\n  \r\n  if (nObjetos ~= nObjetosActual) and nObjetos == 1 then\r\n\r\n    posicionCarta.x = posicionZonai.x\r\n    posicionCarta.y = posicionZonai.y\r\n    posicionCarta.z = posicionZonai.z\r\n\r\n    carta = objectsInZone[1]\r\n    carta_name = carta.getName()\r\n\r\n    if carta_name == '3r' or carta_name == '3c' then\r\n      objectsInZone[1].setPosition(posicionCarta)\r\n      objectsInZone[1].setRotation(rotation)\r\n      objectsInZone[1].setLock(true)\r\n    end\r\n\r\n  end\r\n\r\n  nObjetosActual = nObjetos\r\n\r\n  return nObjetosActual\r\n\r\nend\r\n\r\nfunction colocaCartasEnZona(nObjetosActual,zona)\r\n\r\n    local objectsInZone = zona.getObjects()\r\n    local nObjetos = #objectsInZone\r\n    local posicionCarta = {}\r\n    local rotation = zona.getRotation()\r\n    local posicionZonai = zona.getPosition()\r\n    local tipoCanasta = ''\r\n    local nMonos = 0\r\n    local nNormales = 0\r\n    local signo = 1\r\n\r\n    if posicionZonai.x < 0 then\r\n      signo = -1\r\n    end\r\n\r\n    posicionCarta.x = posicionZonai.x-(3.3*signo)\r\n    posicionCarta.y = posicionZonai.y\r\n    posicionCarta.z = posicionZonai.z\r\n\r\n    if (nObjetos ~= nObjetosActual) and (nObjetos < 9) then\r\n\r\n      nObjetosActual = nObjetos\r\n\r\n      for j,carta in pairs(objectsInZone) do\r\n\r\n        local nombreCarta = carta.getName()\r\n        local tipoCarta = ''\r\n\r\n        if (j < 8 and (nombreCarta == 'Oculta' or nombreCarta == 'Oculta Apoyada')) then\r\n          printToAll('La carta oculta se tiene que poner al final', {r=1,g=0,b=0})\r\n          return nObjetosActual\r\n        elseif j == 8 and (nombreCarta ~= 'Oculta' and nombreCarta ~= 'Oculta Apoyada') then\r\n          printToAll('La carta número 8 solo puede ser la carta oculta', {r=1,g=0,b=0})\r\n          return nObjetosActual\r\n        end\r\n\r\n        if (nombreCarta == 'Joker') or\r\n           (nombreCarta == '2c') or\r\n           (nombreCarta == '2r') or\r\n           (nombreCarta == '2p') or\r\n           (nombreCarta == '2t') then\r\n          nMonos = nMonos + 1\r\n          tipoCarta = 'Mono'\r\n        else\r\n          tipoCarta = string.sub(nombreCarta,\r\n                      string.len(nombreCarta)-2,\r\n                      string.len(nombreCarta)-1)\r\n        end\r\n\r\n        if tipoCarta == '3' then\r\n          print('No se pueden hacer canastas de 3')\r\n          return nObjetosActual\r\n        end\r\n\r\n        if j == 1 then\r\n          tipoCanasta = tipoCarta\r\n          print('La canasta será del tipo: ', tipoCarta)\r\n        elseif (nombreCarta ~= 'Oculta') and (nombreCarta ~= 'Oculta Apoyada')\r\n                and ((tipoCanasta ~= tipoCarta) and (tipoCarta ~= 'Mono' )) or\r\n                ((tipoCanasta ~= 'Mono') and (nMonos > (nObjetos/2))) then\r\n          print('Esta carta no es válida para esta canasta')\r\n          return nObjetosActual\r\n        else\r\n          print('Esta carta es válida')\r\n        end\r\n\r\n      end\r\n\r\n      for _, object in ipairs(objectsInZone) do\r\n        object.setPosition(posicionCarta)\r\n        object.setRotation(rotation)\r\n        object.setLock(true)\r\n        posicionCarta.x = posicionCarta.x+(0.75*signo)\r\n        posicionCarta.y = posicionCarta.y+0.0001\r\n      end\r\n\r\n  end\r\n\r\n  return nObjetosActual\r\n\r\nend\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Funciones/colocar_cartas\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_GUID\n-- -------------------------------GUID_ZONAS----------------------------\r\n-- ----------------------- Equipo 1----------------------\r\n-- ----------------Canastas-------------------\r\nzonaCanastaE1_C01_GUID = 'db7d7a'\r\nzonaCanastaE1_C02_GUID = '1e1fee'\r\nzonaCanastaE1_C03_GUID = '1a0d9d'\r\nzonaCanastaE1_C04_GUID = '45f2be'\r\nzonaCanastaE1_C05_GUID = '65d35b'\r\nzonaCanastaE1_C06_GUID = '29035b'\r\nzonaCanastaE1_C07_GUID = '1ad7ac'\r\nzonaCanastaE1_C08_GUID = '875f5e'\r\nzonaCanastaE1_C09_GUID = 'bdafdd'\r\n-- -------------------------------------------\r\n-- ----------------Cerradas/Flores------------\r\nzonaCerradaE1_C01_GUID = '2ef863'\r\nzonaCerradaE1_C02_GUID = '880f29'\r\nzonaCerradaE1_C03_GUID = 'f2b64b'\r\nzonaCerradaE1_C04_GUID = '1359fa'\r\nzonaCerradaE1_C05_GUID = '8463b8'\r\nzonaCerradaE1_C06_GUID = '04dcae'\r\nzonaCerradaE1_C07_GUID = '1ef3ec'\r\nzonaCerradaE1_C08_GUID = 'da892d'\r\n-------------------------Flores------------\r\nzonaCerradaE1_F01_GUID = 'ed889e'\r\nzonaCerradaE1_F02_GUID = '9f2a5d'\r\nzonaCerradaE1_F03_GUID = '0b88c3'\r\nzonaCerradaE1_F04_GUID = '5883a5'\r\n-------------------------------------------\r\n------------------------------------------------------\r\n----------------------- Equipo 2----------------------\r\n----------------Canastas-------------------\r\nzonaCanastaE2_C01_GUID = '2e09c7'\r\nzonaCanastaE2_C02_GUID = '970291'\r\nzonaCanastaE2_C03_GUID = '649098'\r\nzonaCanastaE2_C04_GUID = 'b8caf3'\r\nzonaCanastaE2_C05_GUID = 'e26404'\r\nzonaCanastaE2_C06_GUID = 'ed78e4'\r\nzonaCanastaE2_C07_GUID = 'a6714b'\r\nzonaCanastaE2_C08_GUID = 'df0ee8'\r\nzonaCanastaE2_C09_GUID = 'ccf4ad'\r\n-------------------------------------------\r\n----------------Cerradas/Flores------------\r\nzonaCerradaE2_C01_GUID = '8ebbc8'\r\nzonaCerradaE2_C02_GUID = '7283e5'\r\nzonaCerradaE2_C03_GUID = '8279ef'\r\nzonaCerradaE2_C04_GUID = '3493a2'\r\nzonaCerradaE2_C05_GUID = 'e67d0f'\r\nzonaCerradaE2_C06_GUID = '07c6a3'\r\nzonaCerradaE2_C07_GUID = 'd2e8d9'\r\nzonaCerradaE2_C08_GUID = 'abfa5d'\r\n-------------------------Flores------------\r\nzonaCerradaE2_F01_GUID = '4e6a03'\r\nzonaCerradaE2_F02_GUID = 'e54478'\r\nzonaCerradaE2_F03_GUID = 'f2eba4'\r\nzonaCerradaE2_F04_GUID = '4889e2'\r\n-------------------------------------------\r\n----------- MESA ---------------\r\nzonaCanastaE1_GUID = '4621af'\r\nzonaCanastaE2_GUID = '90dfb9'\r\n-------------------------------------------\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_GUID\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/objetos_GUID\n-- BASE CANASTA EQUIPO 1 --\r\nbloque_canasta_E1_C01_GUID = '6f139a'\r\nbloque_canasta_E1_C02_GUID = '32bf01'\r\nbloque_canasta_E1_C03_GUID = 'ceaefc'\r\nbloque_canasta_E1_C04_GUID = '80526b'\r\nbloque_canasta_E1_C05_GUID = 'faf549'\r\nbloque_canasta_E1_C06_GUID = '39a73f'\r\nbloque_canasta_E1_C07_GUID = 'db0e7a'\r\nbloque_canasta_E1_C08_GUID = 'd6933a'\r\n\r\n-- BASE CANASTA EQUIPO 2 --\r\nbloque_canasta_E2_C01_GUID = '485745'\r\nbloque_canasta_E2_C02_GUID = 'f5df8d'\r\nbloque_canasta_E2_C03_GUID = 'a970d2'\r\nbloque_canasta_E2_C04_GUID = '812e44'\r\nbloque_canasta_E2_C05_GUID = '399d90'\r\nbloque_canasta_E2_C06_GUID = '6d7a78'\r\nbloque_canasta_E2_C07_GUID = 'f0f466'\r\nbloque_canasta_E2_C08_GUID = 'dc6c83'\r\n\r\n-- BOTÓN FINALIZAR RONDA\r\nboton_finalizar_ronda_GUID = '5d2de2'\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/objetos_GUID\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/contadores_GUID\n-- CONTADOR PUNTOS CANASTAS --\r\ncontador_puntos_canastas_E1_GUID = '821d9e'\r\ncontador_puntos_canastas_E2_GUID = '5043d9'\r\n\r\n-- CONTADOR PUNTOS TOTALES --\r\ncontador_puntos_total_E1_GUID = 'f204af'\r\ncontador_puntos_total_E2_GUID = '784c65'\r\n\r\n-- CONTADOR RONDA\r\ncontador_ronda_GUID = 'a17f07'\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/contadores_GUID\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_objects\n--------------GENERANDO OBJETOS DESDE lAS GUIDS----------------------\r\n----------------------- Equipo 1----------------------\r\n----------------Canastas-------------------\r\nzonaCanastaE1_C01 = getObjectFromGUID(zonaCanastaE1_C01_GUID)\r\nzonaCanastaE1_C02 = getObjectFromGUID(zonaCanastaE1_C02_GUID)\r\nzonaCanastaE1_C03 = getObjectFromGUID(zonaCanastaE1_C03_GUID)\r\nzonaCanastaE1_C04 = getObjectFromGUID(zonaCanastaE1_C04_GUID)\r\nzonaCanastaE1_C05 = getObjectFromGUID(zonaCanastaE1_C05_GUID)\r\nzonaCanastaE1_C06 = getObjectFromGUID(zonaCanastaE1_C06_GUID)\r\nzonaCanastaE1_C07 = getObjectFromGUID(zonaCanastaE1_C07_GUID)\r\nzonaCanastaE1_C08 = getObjectFromGUID(zonaCanastaE1_C08_GUID)\r\nzonaCanastaE1_C09 = getObjectFromGUID(zonaCanastaE1_C09_GUID)\r\n-------------------------------------------\r\n----------------Cerradas/Flores------------\r\nZonaCerradaE1_C01 = getObjectFromGUID(zonaCerradaE1_C01_GUID)\r\nZonaCerradaE1_C02 = getObjectFromGUID(zonaCerradaE1_C02_GUID)\r\nZonaCerradaE1_C03 = getObjectFromGUID(zonaCerradaE1_C03_GUID)\r\nZonaCerradaE1_C04 = getObjectFromGUID(zonaCerradaE1_C04_GUID)\r\nZonaCerradaE1_C05 = getObjectFromGUID(zonaCerradaE1_C05_GUID)\r\nZonaCerradaE1_C06 = getObjectFromGUID(zonaCerradaE1_C06_GUID)\r\nZonaCerradaE1_C07 = getObjectFromGUID(zonaCerradaE1_C07_GUID)\r\nZonaCerradaE1_C08 = getObjectFromGUID(zonaCerradaE1_C08_GUID)\r\n-------------------------Flores------------\r\nZonaCerradaE1_F01 = getObjectFromGUID(zonaCerradaE1_F01_GUID)\r\nZonaCerradaE1_F02 = getObjectFromGUID(zonaCerradaE1_F02_GUID)\r\nZonaCerradaE1_F03 = getObjectFromGUID(zonaCerradaE1_F03_GUID)\r\nZonaCerradaE1_F04 = getObjectFromGUID(zonaCerradaE1_F04_GUID)\r\n-------------------------------------------\r\n------------------------------------------------------\r\n----------------------- Equipo 2----------------------\r\n----------------Canastas-------------------\r\nzonaCanastaE2_C01 = getObjectFromGUID(zonaCanastaE2_C01_GUID)\r\nzonaCanastaE2_C02 = getObjectFromGUID(zonaCanastaE2_C02_GUID)\r\nzonaCanastaE2_C03 = getObjectFromGUID(zonaCanastaE2_C03_GUID)\r\nzonaCanastaE2_C04 = getObjectFromGUID(zonaCanastaE2_C04_GUID)\r\nzonaCanastaE2_C05 = getObjectFromGUID(zonaCanastaE2_C05_GUID)\r\nzonaCanastaE2_C06 = getObjectFromGUID(zonaCanastaE2_C06_GUID)\r\nzonaCanastaE2_C07 = getObjectFromGUID(zonaCanastaE2_C07_GUID)\r\nzonaCanastaE2_C08 = getObjectFromGUID(zonaCanastaE2_C08_GUID)\r\nzonaCanastaE2_C09 = getObjectFromGUID(zonaCanastaE2_C09_GUID)\r\n-------------------------------------------\r\n----------------Cerradas/Flores------------\r\nZonaCerradaE2_C01 = getObjectFromGUID(zonaCerradaE2_C01_GUID)\r\nZonaCerradaE2_C02 = getObjectFromGUID(zonaCerradaE2_C02_GUID)\r\nZonaCerradaE2_C03 = getObjectFromGUID(zonaCerradaE2_C03_GUID)\r\nZonaCerradaE2_C04 = getObjectFromGUID(zonaCerradaE2_C04_GUID)\r\nZonaCerradaE2_C05 = getObjectFromGUID(zonaCerradaE2_C05_GUID)\r\nZonaCerradaE2_C06 = getObjectFromGUID(zonaCerradaE2_C06_GUID)\r\nZonaCerradaE2_C07 = getObjectFromGUID(zonaCerradaE2_C07_GUID)\r\nZonaCerradaE2_C08 = getObjectFromGUID(zonaCerradaE2_C08_GUID)\r\n-------------------------Flores------------\r\nZonaCerradaE2_F01 = getObjectFromGUID(zonaCerradaE2_F01_GUID)\r\nZonaCerradaE2_F02 = getObjectFromGUID(zonaCerradaE2_F02_GUID)\r\nZonaCerradaE2_F03 = getObjectFromGUID(zonaCerradaE2_F03_GUID)\r\nZonaCerradaE2_F04 = getObjectFromGUID(zonaCerradaE2_F04_GUID)\r\n-------------------------------------------\r\n\r\n    ---------------------------------------------------------------------\r\n    -------------------GENERANDO BLOQUES DE ZONAS------------------------\r\n    ----------------------- Equipo 1----------------------\r\n    zonasCanastaE1 = {zonaCanastaE1_C01, zonaCanastaE1_C02,\r\n    zonaCanastaE1_C03, zonaCanastaE1_C04, zonaCanastaE1_C05,\r\n    zonaCanastaE1_C06, zonaCanastaE1_C07, zonaCanastaE1_C08,\r\n    zonaCanastaE1_C09}\r\n\r\n    zonasCerradasE1 = {zonaCerradaE1_C01,zonaCerradaE1_C02,\r\n    zonaCerradaE1_C03,zonaCerradaE1_C04,zonaCerradaE1_C05,\r\n    zonaCerradaE1_C06,zonaCerradaE1_C07,zonaCerradaE1_C08}\r\n\r\n    zonasFloresE1 = {ZonaCerradaE1_F01,ZonaCerradaE1_F02,\r\n    ZonaCerradaE1_F03,ZonaCerradaE1_F04}\r\n    ----------------------- Equipo 2----------------------\r\n    zonasCanastaE2 = {zonaCanastaE2_C01, zonaCanastaE2_C02,\r\n    zonaCanastaE2_C03, zonaCanastaE2_C04, zonaCanastaE2_C05,\r\n    zonaCanastaE2_C06, zonaCanastaE2_C07, zonaCanastaE2_C08,\r\n    zonaCanastaE2_C09}\r\n\r\n    zonasCerradasE2 = {zonaCerradaE2_C01,zonaCerradaE2_C02,\r\n    zonaCerradaE2_C03,zonaCerradaE2_C04,zonaCerradaE2_C05,\r\n    zonaCerradaE2_C06,zonaCerradaE2_C07,zonaCerradaE2_C08}\r\n\r\n    zonasFloresE2 = {ZonaCerradaE2_F01,ZonaCerradaE2_F02,\r\n    ZonaCerradaE2_F03,ZonaCerradaE2_F04}\r\n    ---------------------------------------------------------------------\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_objects\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/objetos_objects\n-- BASE CANASTA EQUIPO 1 --\r\nbloque_canasta_E1_C01 = getObjectFromGUID(bloque_canasta_E1_C01_GUID)\r\nbloque_canasta_E1_C02 = getObjectFromGUID(bloque_canasta_E1_C02_GUID)\r\nbloque_canasta_E1_C03 = getObjectFromGUID(bloque_canasta_E1_C03_GUID)\r\nbloque_canasta_E1_C04 = getObjectFromGUID(bloque_canasta_E1_C04_GUID)\r\nbloque_canasta_E1_C05 = getObjectFromGUID(bloque_canasta_E1_C05_GUID)\r\nbloque_canasta_E1_C06 = getObjectFromGUID(bloque_canasta_E1_C06_GUID)\r\nbloque_canasta_E1_C07 = getObjectFromGUID(bloque_canasta_E1_C07_GUID)\r\nbloque_canasta_E1_C08 = getObjectFromGUID(bloque_canasta_E1_C08_GUID)\r\n\r\n-- BASE CANASTA EQUIPO 2 --\r\nbloque_canasta_E2_C01 = getObjectFromGUID(bloque_canasta_E2_C01_GUID)\r\nbloque_canasta_E2_C02 = getObjectFromGUID(bloque_canasta_E2_C02_GUID)\r\nbloque_canasta_E2_C03 = getObjectFromGUID(bloque_canasta_E2_C03_GUID)\r\nbloque_canasta_E2_C04 = getObjectFromGUID(bloque_canasta_E2_C04_GUID)\r\nbloque_canasta_E2_C05 = getObjectFromGUID(bloque_canasta_E2_C05_GUID)\r\nbloque_canasta_E2_C06 = getObjectFromGUID(bloque_canasta_E2_C06_GUID)\r\nbloque_canasta_E2_C07 = getObjectFromGUID(bloque_canasta_E2_C07_GUID)\r\nbloque_canasta_E2_C08 = getObjectFromGUID(bloque_canasta_E2_C08_GUID)\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/objetos_objects\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/contadores_objects\n-- CONTADOR PUNTOS CANASTAS --\r\ncontador_puntos_canastas_E1 = getObjectFromGUID(contador_puntos_canastas_E1_GUID)\r\ncontador_puntos_canastas_E2 = getObjectFromGUID(contador_puntos_canastas_E2_GUID)\r\n\r\n-- CONTADOR PUNTOS TOTALES --\r\ncontador_puntos_total_E1 = getObjectFromGUID(contador_puntos_total_E1_GUID)\r\ncontador_puntos_total_E2 = getObjectFromGUID(contador_puntos_total_E2_GUID)\r\n\r\n-- CONTADOR RONDA\r\ncontador_ronda = getObjectFromGUID(contador_ronda_GUID)\r\n\r\n-- Bloqueamos contadores\r\ncontador_puntos_canastas_E1.interactable = false\r\ncontador_puntos_canastas_E2.interactable = false\r\ncontador_puntos_total_E1.interactable = false\r\ncontador_puntos_total_E2.interactable = false\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/contadores_objects\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_jugadores\n-- JUGADORES\r\nJugador_1_E1 = Player[\"Blue\"]\r\nJugador_2_E1 = Player[\"Yellow\"]\r\nJugador_1_E2 = Player[\"Green\"]\r\nJugador_2_E2 = Player[\"Red\"]\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_jugadores\n\n    -- SCRIPT ZONAS DE CANASTAS\n    posicionZonaE1 = {}\n    nObjetosActualE1 = {}\n    posicionZonaE2 = {}\n    nObjetosActualE2 = {}\n\n    posicionZonaF1 = {}\n    nObjetosActualF1 = {}\n    posicionZonaF2 = {}\n    nObjetosActualF2 = {}\n\n    for i, zona in pairs(zonasCanastaE1) do\n      posicionZonaE1.i = zona.getPosition()\n      nObjetosActualE1[i] = #(zona.getObjects())\n    end\n    for i, zona in pairs(zonasCanastaE2) do\n      posicionZonaE2.i = zona.getPosition()\n      nObjetosActualE2[i] = #(zona.getObjects())\n    end\n    for i, zona in pairs(zonasFloresE1) do\n      posicionZonaF1.i = zona.getPosition()\n      nObjetosActualF1[i] = #(zona.getObjects())\n    end\n    for i, zona in pairs(zonasFloresE2) do\n      posicionZonaF2.i = zona.getPosition()\n      nObjetosActualF2[i] = #(zona.getObjects())\n    end\n\nend\n\nfunction onUpdate()\n\n  for i,zona in ipairs(zonasFloresE1) do\n    nObjetosActualF1[i] = colocarFloresEnZona(nObjetosActualF1[i],zona)\n  end\n  for i,zona in ipairs(zonasFloresE2) do\n    nObjetosActualF2[i] = colocarFloresEnZona(nObjetosActualF2[i],zona)\n  end\n  for i,zona in ipairs(zonasCanastaE1) do\n    nObjetosActualE1[i] = colocaCartasEnZona(nObjetosActualE1[i],zona)\n  end\n  for i,zona in ipairs(zonasCanastaE2) do\n    nObjetosActualE2[i] = colocaCartasEnZona(nObjetosActualE2[i],zona)\n  end\n\nend",
+  "LuaScript": "function onLoad()\n\n    -- INCLUDES\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Funciones/resetear_mesa\nfunction reset_table()\r\n\r\n  --ronda = contador_ronda.getvalue()\r\n  ronda = 0\r\n  \r\n  if ronda >= 1 then\r\n\r\n  -- PONEMOS PUNTOS DE CONTADORES DE CANASTAS A CERO\r\n  contador_puntos_canastas_E1.setValue(0)\r\n  contador_puntos_canastas_E2.setValue(0)\r\n\r\n  -- PASAMOS DE RONDA\r\n  contador_ronda.setValue(ronda+1)\r\n\r\n  elseif ronda == 0 then\r\n\r\n    -- PONEMOS PUNTOS DE TODOS LOS CONTADORES A CERO\r\n    contador_puntos_canastas_E1.setValue(0)\r\n    contador_puntos_canastas_E2.setValue(0)\r\n    contador_puntos_total_E1.setValue(0)\r\n    contador_puntos_total_E2.setValue(0)\r\n\r\n    -- PONEMOS RONDA A CERO\r\n    contador_ronda.setValue(0)\r\n\r\n  end\r\n\r\n  -- RESETEAMOS COLORES DE BASES DE CANASTA\r\n  bloque_canasta_E1_C01.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C02.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C03.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C04.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C05.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C06.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C07.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E1_C08.setColorTint({0.7,0.7,0.7})\r\n\r\n  bloque_canasta_E2_C01.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C02.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C03.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C04.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C05.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C06.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C07.setColorTint({0.7,0.7,0.7})\r\n  bloque_canasta_E2_C08.setColorTint({0.7,0.7,0.7})\r\n\r\nend\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Funciones/resetear_mesa\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Funciones/colocar_cartas\nfunction colocarFloresEnZona(salidaF,zona,equipo)\r\n\r\n  local objectsInZone = zona.getObjects()\r\n  local nObjetos      = #objectsInZone\r\n  local posicionCarta = {}\r\n  local rotation      = zona.getRotation()\r\n  local posicionZonai = zona.getPosition()\r\n\r\n  nObjetosActual = salidaF[1]\r\n  carta_actual   = salidaF[2]\r\n\r\n  -- Colocamos carta en su sitio, si es una flor\r\n  if (nObjetos ~= nObjetosActual) and nObjetos == 1 then\r\n\r\n    posicionCarta.x = posicionZonai.x\r\n    posicionCarta.y = posicionZonai.y\r\n    posicionCarta.z = posicionZonai.z\r\n\r\n    carta = objectsInZone[1]\r\n    carta_name = carta.getName()\r\n\r\n    if carta_name == '3r' or carta_name == '3c' then\r\n      -- Colocamos flor en su sitio\r\n      objectsInZone[1].setPosition(posicionCarta)\r\n      objectsInZone[1].setRotation(rotation)\r\n      objectsInZone[1].setLock(true)\r\n      -- Contabilizamos puntos\r\n      contar_puntos_flor(equipo,'in')\r\n      -- Guardamos carta\r\n      carta_actual = 'flor'\r\n    else\r\n      carta_actual = 'no_flor'\r\n    end\r\n\r\n  end\r\n\r\n  -- Sacamos flor\r\n  if (nObjetos ~= nObjetosActual) and nObjetos == 0 then\r\n    --print(carta_actual)\r\n    if carta_actual == 'flor' then\r\n      contar_puntos_flor(equipo,'out')\r\n      carta_actual = 'no_flor'\r\n    end\r\n  end\r\n\r\n  nObjetosActual = nObjetos\r\n\r\n  salidaF[1] = nObjetosActual\r\n  salidaF[2] = carta_actual\r\n  return salidaF\r\n\r\nend\r\n\r\nfunction contar_puntos_flor(equipo,in_out)\r\n\r\n  -- Puntos en el contador de puntos canasta\r\n  contador_nombre = 'contador_puntos_canastas_E' .. equipo\r\n  contador_obj = _G[contador_nombre]\r\n\r\n  -- Número de flores del equipo\r\n  zonaF_nombre = 'zonasFloresE' .. equipo\r\n  zonaF_obj = _G[zonaF_nombre]\r\n  Nflores = 0\r\n\r\n  for _,zona in ipairs(zonaF_obj) do\r\n    carta = zona.getObjects()\r\n    Ncarta = #carta\r\n    if Ncarta == 1 then\r\n      Nflores = Nflores + 1\r\n    end\r\n  end\r\n\r\n  -- Contabilizamos nuevos puntos\r\n  puntos_actuales = contador_obj.getValue()\r\n\r\n  if in_out == 'in' then\r\n    signo = 1\r\n  else\r\n    signo = -1\r\n  end\r\n\r\n  if Nflores < 4 then\r\n    if puntos_actuales <= 0 then\r\n      puntos_actuales = puntos_actuales - signo*100\r\n    elseif puntos_actuales > 0 then\r\n      puntos_actuales = puntos_actuales + signo*100\r\n    end\r\n  elseif Nflores == 4 then\r\n    if puntos_actuales <= 0 then\r\n      puntos_actuales = puntos_actuales - signo*500\r\n    elseif puntos_actuales > 0 then\r\n      puntos_actuales = puntos_actuales + signo*500\r\n    end\r\n  end\r\n\r\n  -- Actualizamos contador\r\n  contador_obj.setValue(puntos_actuales)\r\n\r\nend\r\n\r\nfunction colocaCartasEnZona(nObjetosActual,zona)\r\n\r\n    local objectsInZone = zona.getObjects()\r\n    local nObjetos = #objectsInZone\r\n    local posicionCarta = {}\r\n    local rotation = zona.getRotation()\r\n    local posicionZonai = zona.getPosition()\r\n    local tipoCanasta = ''\r\n    local nMonos = 0\r\n    local nNormales = 0\r\n    local signo = 1\r\n\r\n    if posicionZonai.x < 0 then\r\n      signo = -1\r\n    end\r\n\r\n    posicionCarta.x = posicionZonai.x-(3.3*signo)\r\n    posicionCarta.y = posicionZonai.y\r\n    posicionCarta.z = posicionZonai.z\r\n\r\n    if (nObjetos ~= nObjetosActual) and (nObjetos < 9) then\r\n\r\n      nObjetosActual = nObjetos\r\n\r\n      for j,carta in pairs(objectsInZone) do\r\n\r\n        local nombreCarta = carta.getName()\r\n        local tipoCarta = ''\r\n\r\n        if (j < 8 and (nombreCarta == 'Oculta' or nombreCarta == 'Oculta Apoyada')) then\r\n          printToAll('La carta oculta se tiene que poner al final', {r=1,g=0,b=0})\r\n          return nObjetosActual\r\n        elseif j == 8 and (nombreCarta ~= 'Oculta' and nombreCarta ~= 'Oculta Apoyada') then\r\n          printToAll('La carta número 8 solo puede ser la carta oculta', {r=1,g=0,b=0})\r\n          return nObjetosActual\r\n        end\r\n\r\n        if (nombreCarta == 'Joker') or\r\n           (nombreCarta == '2c') or\r\n           (nombreCarta == '2r') or\r\n           (nombreCarta == '2p') or\r\n           (nombreCarta == '2t') then\r\n          nMonos = nMonos + 1\r\n          tipoCarta = 'Mono'\r\n        else\r\n          tipoCarta = string.sub(nombreCarta,\r\n                      string.len(nombreCarta)-2,\r\n                      string.len(nombreCarta)-1)\r\n        end\r\n\r\n        if tipoCarta == '3' then\r\n          print('No se pueden hacer canastas de 3')\r\n          return nObjetosActual\r\n        end\r\n\r\n        if j == 1 then\r\n          tipoCanasta = tipoCarta\r\n          print('La canasta será del tipo: ', tipoCarta)\r\n        elseif (nombreCarta ~= 'Oculta') and (nombreCarta ~= 'Oculta Apoyada')\r\n                and ((tipoCanasta ~= tipoCarta) and (tipoCarta ~= 'Mono' )) or\r\n                ((tipoCanasta ~= 'Mono') and (nMonos > (nObjetos/2))) then\r\n          print('Esta carta no es válida para esta canasta')\r\n          return nObjetosActual\r\n        else\r\n          print('Esta carta es válida')\r\n        end\r\n\r\n      end\r\n\r\n      for _, object in ipairs(objectsInZone) do\r\n        object.setPosition(posicionCarta)\r\n        object.setRotation(rotation)\r\n        object.setLock(true)\r\n        posicionCarta.x = posicionCarta.x+(0.75*signo)\r\n        posicionCarta.y = posicionCarta.y+0.0001\r\n      end\r\n\r\n  end\r\n\r\n  return nObjetosActual\r\n\r\nend\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Funciones/colocar_cartas\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_GUID\n-- -------------------------------GUID_ZONAS----------------------------\r\n-- ----------------------- Equipo 1----------------------\r\n-- ----------------Canastas-------------------\r\nzonaCanastaE1_C01_GUID = 'db7d7a'\r\nzonaCanastaE1_C02_GUID = '1e1fee'\r\nzonaCanastaE1_C03_GUID = '1a0d9d'\r\nzonaCanastaE1_C04_GUID = '45f2be'\r\nzonaCanastaE1_C05_GUID = '65d35b'\r\nzonaCanastaE1_C06_GUID = '29035b'\r\nzonaCanastaE1_C07_GUID = '1ad7ac'\r\nzonaCanastaE1_C08_GUID = '875f5e'\r\nzonaCanastaE1_C09_GUID = 'bdafdd'\r\n-- -------------------------------------------\r\n-- ----------------Cerradas/Flores------------\r\nzonaCerradaE1_C01_GUID = '2ef863'\r\nzonaCerradaE1_C02_GUID = '880f29'\r\nzonaCerradaE1_C03_GUID = 'f2b64b'\r\nzonaCerradaE1_C04_GUID = '1359fa'\r\nzonaCerradaE1_C05_GUID = '8463b8'\r\nzonaCerradaE1_C06_GUID = '04dcae'\r\nzonaCerradaE1_C07_GUID = '1ef3ec'\r\nzonaCerradaE1_C08_GUID = 'da892d'\r\n-------------------------Flores------------\r\nzonaCerradaE1_F01_GUID = 'ed889e'\r\nzonaCerradaE1_F02_GUID = '9f2a5d'\r\nzonaCerradaE1_F03_GUID = '0b88c3'\r\nzonaCerradaE1_F04_GUID = '5883a5'\r\n-------------------------------------------\r\n------------------------------------------------------\r\n----------------------- Equipo 2----------------------\r\n----------------Canastas-------------------\r\nzonaCanastaE2_C01_GUID = '2e09c7'\r\nzonaCanastaE2_C02_GUID = '970291'\r\nzonaCanastaE2_C03_GUID = '649098'\r\nzonaCanastaE2_C04_GUID = 'b8caf3'\r\nzonaCanastaE2_C05_GUID = 'e26404'\r\nzonaCanastaE2_C06_GUID = 'ed78e4'\r\nzonaCanastaE2_C07_GUID = 'a6714b'\r\nzonaCanastaE2_C08_GUID = 'df0ee8'\r\nzonaCanastaE2_C09_GUID = 'ccf4ad'\r\n-------------------------------------------\r\n----------------Cerradas/Flores------------\r\nzonaCerradaE2_C01_GUID = '8ebbc8'\r\nzonaCerradaE2_C02_GUID = '7283e5'\r\nzonaCerradaE2_C03_GUID = '8279ef'\r\nzonaCerradaE2_C04_GUID = '3493a2'\r\nzonaCerradaE2_C05_GUID = 'e67d0f'\r\nzonaCerradaE2_C06_GUID = '07c6a3'\r\nzonaCerradaE2_C07_GUID = 'd2e8d9'\r\nzonaCerradaE2_C08_GUID = 'abfa5d'\r\n-------------------------Flores------------\r\nzonaCerradaE2_F01_GUID = '4e6a03'\r\nzonaCerradaE2_F02_GUID = 'e54478'\r\nzonaCerradaE2_F03_GUID = 'f2eba4'\r\nzonaCerradaE2_F04_GUID = '4889e2'\r\n-------------------------------------------\r\n----------- MESA ---------------\r\nzonaCanastaE1_GUID = '4621af'\r\nzonaCanastaE2_GUID = '90dfb9'\r\n-------------------------------------------\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_GUID\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/objetos_GUID\n-- BASE CANASTA EQUIPO 1 --\r\nbloque_canasta_E1_C01_GUID = '6f139a'\r\nbloque_canasta_E1_C02_GUID = '32bf01'\r\nbloque_canasta_E1_C03_GUID = 'ceaefc'\r\nbloque_canasta_E1_C04_GUID = '80526b'\r\nbloque_canasta_E1_C05_GUID = 'faf549'\r\nbloque_canasta_E1_C06_GUID = '39a73f'\r\nbloque_canasta_E1_C07_GUID = 'db0e7a'\r\nbloque_canasta_E1_C08_GUID = 'd6933a'\r\n\r\n-- BASE CANASTA EQUIPO 2 --\r\nbloque_canasta_E2_C01_GUID = '485745'\r\nbloque_canasta_E2_C02_GUID = 'f5df8d'\r\nbloque_canasta_E2_C03_GUID = 'a970d2'\r\nbloque_canasta_E2_C04_GUID = '812e44'\r\nbloque_canasta_E2_C05_GUID = '399d90'\r\nbloque_canasta_E2_C06_GUID = '6d7a78'\r\nbloque_canasta_E2_C07_GUID = 'f0f466'\r\nbloque_canasta_E2_C08_GUID = 'dc6c83'\r\n\r\n-- BOTÓN FINALIZAR RONDA\r\nboton_finalizar_ronda_GUID = '5d2de2'\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/objetos_GUID\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/contadores_GUID\n-- CONTADOR PUNTOS CANASTAS --\r\ncontador_puntos_canastas_E1_GUID = '821d9e'\r\ncontador_puntos_canastas_E2_GUID = '5043d9'\r\n\r\n-- CONTADOR PUNTOS TOTALES --\r\ncontador_puntos_total_E1_GUID = 'f204af'\r\ncontador_puntos_total_E2_GUID = '784c65'\r\n\r\n-- CONTADOR RONDA\r\ncontador_ronda_GUID = 'a17f07'\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/contadores_GUID\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_objects\n--------------GENERANDO OBJETOS DESDE lAS GUIDS----------------------\r\n----------------------- Equipo 1----------------------\r\n----------------Canastas-------------------\r\nzonaCanastaE1_C01 = getObjectFromGUID(zonaCanastaE1_C01_GUID)\r\nzonaCanastaE1_C02 = getObjectFromGUID(zonaCanastaE1_C02_GUID)\r\nzonaCanastaE1_C03 = getObjectFromGUID(zonaCanastaE1_C03_GUID)\r\nzonaCanastaE1_C04 = getObjectFromGUID(zonaCanastaE1_C04_GUID)\r\nzonaCanastaE1_C05 = getObjectFromGUID(zonaCanastaE1_C05_GUID)\r\nzonaCanastaE1_C06 = getObjectFromGUID(zonaCanastaE1_C06_GUID)\r\nzonaCanastaE1_C07 = getObjectFromGUID(zonaCanastaE1_C07_GUID)\r\nzonaCanastaE1_C08 = getObjectFromGUID(zonaCanastaE1_C08_GUID)\r\nzonaCanastaE1_C09 = getObjectFromGUID(zonaCanastaE1_C09_GUID)\r\n-------------------------------------------\r\n----------------Cerradas/Flores------------\r\nZonaCerradaE1_C01 = getObjectFromGUID(zonaCerradaE1_C01_GUID)\r\nZonaCerradaE1_C02 = getObjectFromGUID(zonaCerradaE1_C02_GUID)\r\nZonaCerradaE1_C03 = getObjectFromGUID(zonaCerradaE1_C03_GUID)\r\nZonaCerradaE1_C04 = getObjectFromGUID(zonaCerradaE1_C04_GUID)\r\nZonaCerradaE1_C05 = getObjectFromGUID(zonaCerradaE1_C05_GUID)\r\nZonaCerradaE1_C06 = getObjectFromGUID(zonaCerradaE1_C06_GUID)\r\nZonaCerradaE1_C07 = getObjectFromGUID(zonaCerradaE1_C07_GUID)\r\nZonaCerradaE1_C08 = getObjectFromGUID(zonaCerradaE1_C08_GUID)\r\n-------------------------Flores------------\r\nZonaCerradaE1_F01 = getObjectFromGUID(zonaCerradaE1_F01_GUID)\r\nZonaCerradaE1_F02 = getObjectFromGUID(zonaCerradaE1_F02_GUID)\r\nZonaCerradaE1_F03 = getObjectFromGUID(zonaCerradaE1_F03_GUID)\r\nZonaCerradaE1_F04 = getObjectFromGUID(zonaCerradaE1_F04_GUID)\r\n-------------------------------------------\r\n------------------------------------------------------\r\n----------------------- Equipo 2----------------------\r\n----------------Canastas-------------------\r\nzonaCanastaE2_C01 = getObjectFromGUID(zonaCanastaE2_C01_GUID)\r\nzonaCanastaE2_C02 = getObjectFromGUID(zonaCanastaE2_C02_GUID)\r\nzonaCanastaE2_C03 = getObjectFromGUID(zonaCanastaE2_C03_GUID)\r\nzonaCanastaE2_C04 = getObjectFromGUID(zonaCanastaE2_C04_GUID)\r\nzonaCanastaE2_C05 = getObjectFromGUID(zonaCanastaE2_C05_GUID)\r\nzonaCanastaE2_C06 = getObjectFromGUID(zonaCanastaE2_C06_GUID)\r\nzonaCanastaE2_C07 = getObjectFromGUID(zonaCanastaE2_C07_GUID)\r\nzonaCanastaE2_C08 = getObjectFromGUID(zonaCanastaE2_C08_GUID)\r\nzonaCanastaE2_C09 = getObjectFromGUID(zonaCanastaE2_C09_GUID)\r\n-------------------------------------------\r\n----------------Cerradas/Flores------------\r\nZonaCerradaE2_C01 = getObjectFromGUID(zonaCerradaE2_C01_GUID)\r\nZonaCerradaE2_C02 = getObjectFromGUID(zonaCerradaE2_C02_GUID)\r\nZonaCerradaE2_C03 = getObjectFromGUID(zonaCerradaE2_C03_GUID)\r\nZonaCerradaE2_C04 = getObjectFromGUID(zonaCerradaE2_C04_GUID)\r\nZonaCerradaE2_C05 = getObjectFromGUID(zonaCerradaE2_C05_GUID)\r\nZonaCerradaE2_C06 = getObjectFromGUID(zonaCerradaE2_C06_GUID)\r\nZonaCerradaE2_C07 = getObjectFromGUID(zonaCerradaE2_C07_GUID)\r\nZonaCerradaE2_C08 = getObjectFromGUID(zonaCerradaE2_C08_GUID)\r\n-------------------------Flores------------\r\nZonaCerradaE2_F01 = getObjectFromGUID(zonaCerradaE2_F01_GUID)\r\nZonaCerradaE2_F02 = getObjectFromGUID(zonaCerradaE2_F02_GUID)\r\nZonaCerradaE2_F03 = getObjectFromGUID(zonaCerradaE2_F03_GUID)\r\nZonaCerradaE2_F04 = getObjectFromGUID(zonaCerradaE2_F04_GUID)\r\n-------------------------------------------\r\n\r\n    ---------------------------------------------------------------------\r\n    -------------------GENERANDO BLOQUES DE ZONAS------------------------\r\n    ----------------------- Equipo 1----------------------\r\n    zonasCanastaE1 = {zonaCanastaE1_C01, zonaCanastaE1_C02,\r\n    zonaCanastaE1_C03, zonaCanastaE1_C04, zonaCanastaE1_C05,\r\n    zonaCanastaE1_C06, zonaCanastaE1_C07, zonaCanastaE1_C08,\r\n    zonaCanastaE1_C09}\r\n\r\n    zonasCerradasE1 = {zonaCerradaE1_C01,zonaCerradaE1_C02,\r\n    zonaCerradaE1_C03,zonaCerradaE1_C04,zonaCerradaE1_C05,\r\n    zonaCerradaE1_C06,zonaCerradaE1_C07,zonaCerradaE1_C08}\r\n\r\n    zonasFloresE1 = {ZonaCerradaE1_F01,ZonaCerradaE1_F02,\r\n    ZonaCerradaE1_F03,ZonaCerradaE1_F04}\r\n    ----------------------- Equipo 2----------------------\r\n    zonasCanastaE2 = {zonaCanastaE2_C01, zonaCanastaE2_C02,\r\n    zonaCanastaE2_C03, zonaCanastaE2_C04, zonaCanastaE2_C05,\r\n    zonaCanastaE2_C06, zonaCanastaE2_C07, zonaCanastaE2_C08,\r\n    zonaCanastaE2_C09}\r\n\r\n    zonasCerradasE2 = {zonaCerradaE2_C01,zonaCerradaE2_C02,\r\n    zonaCerradaE2_C03,zonaCerradaE2_C04,zonaCerradaE2_C05,\r\n    zonaCerradaE2_C06,zonaCerradaE2_C07,zonaCerradaE2_C08}\r\n\r\n    zonasFloresE2 = {ZonaCerradaE2_F01,ZonaCerradaE2_F02,\r\n    ZonaCerradaE2_F03,ZonaCerradaE2_F04}\r\n    ---------------------------------------------------------------------\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_objects\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/objetos_objects\n-- BASE CANASTA EQUIPO 1 --\r\nbloque_canasta_E1_C01 = getObjectFromGUID(bloque_canasta_E1_C01_GUID)\r\nbloque_canasta_E1_C02 = getObjectFromGUID(bloque_canasta_E1_C02_GUID)\r\nbloque_canasta_E1_C03 = getObjectFromGUID(bloque_canasta_E1_C03_GUID)\r\nbloque_canasta_E1_C04 = getObjectFromGUID(bloque_canasta_E1_C04_GUID)\r\nbloque_canasta_E1_C05 = getObjectFromGUID(bloque_canasta_E1_C05_GUID)\r\nbloque_canasta_E1_C06 = getObjectFromGUID(bloque_canasta_E1_C06_GUID)\r\nbloque_canasta_E1_C07 = getObjectFromGUID(bloque_canasta_E1_C07_GUID)\r\nbloque_canasta_E1_C08 = getObjectFromGUID(bloque_canasta_E1_C08_GUID)\r\n\r\n-- BASE CANASTA EQUIPO 2 --\r\nbloque_canasta_E2_C01 = getObjectFromGUID(bloque_canasta_E2_C01_GUID)\r\nbloque_canasta_E2_C02 = getObjectFromGUID(bloque_canasta_E2_C02_GUID)\r\nbloque_canasta_E2_C03 = getObjectFromGUID(bloque_canasta_E2_C03_GUID)\r\nbloque_canasta_E2_C04 = getObjectFromGUID(bloque_canasta_E2_C04_GUID)\r\nbloque_canasta_E2_C05 = getObjectFromGUID(bloque_canasta_E2_C05_GUID)\r\nbloque_canasta_E2_C06 = getObjectFromGUID(bloque_canasta_E2_C06_GUID)\r\nbloque_canasta_E2_C07 = getObjectFromGUID(bloque_canasta_E2_C07_GUID)\r\nbloque_canasta_E2_C08 = getObjectFromGUID(bloque_canasta_E2_C08_GUID)\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/objetos_objects\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/contadores_objects\n-- CONTADOR PUNTOS CANASTAS --\r\ncontador_puntos_canastas_E1 = getObjectFromGUID(contador_puntos_canastas_E1_GUID)\r\ncontador_puntos_canastas_E2 = getObjectFromGUID(contador_puntos_canastas_E2_GUID)\r\n\r\n-- CONTADOR PUNTOS TOTALES --\r\ncontador_puntos_total_E1 = getObjectFromGUID(contador_puntos_total_E1_GUID)\r\ncontador_puntos_total_E2 = getObjectFromGUID(contador_puntos_total_E2_GUID)\r\n\r\n-- CONTADOR RONDA\r\ncontador_ronda = getObjectFromGUID(contador_ronda_GUID)\r\n\r\n-- Bloqueamos contadores\r\ncontador_puntos_canastas_E1.interactable = false\r\ncontador_puntos_canastas_E2.interactable = false\r\ncontador_puntos_total_E1.interactable = false\r\ncontador_puntos_total_E2.interactable = false\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/contadores_objects\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_jugadores\n-- JUGADORES\r\nJugador_1_E1 = Player[\"Blue\"]\r\nJugador_2_E1 = Player[\"Yellow\"]\r\nJugador_1_E2 = Player[\"Green\"]\r\nJugador_2_E2 = Player[\"Red\"]\r\n\n----    #include !/../../AppData/Local/Temp/TabletopSimulator/Tabletop Simulator Lua/Zonas_Objetos/zonas_jugadores\n\n    -- SCRIPT ZONAS DE CANASTAS\n    posicionZonaE1 = {}\n    nObjetosActualE1 = {}\n    posicionZonaE2 = {}\n    nObjetosActualE2 = {}\n\n    posicionZonaF1 = {}\n    nObjetosActualF1 = {}\n    posicionZonaF2 = {}\n    nObjetosActualF2 = {}\n    carta_actualF1 = {}\n    carta_actualF2 = {}\n\n    -- CANASTAS\n    for i, zona in pairs(zonasCanastaE1) do\n      posicionZonaE1.i = zona.getPosition()\n      nObjetosActualE1[i] = #(zona.getObjects())\n    end\n    for i, zona in pairs(zonasCanastaE2) do\n      posicionZonaE2.i = zona.getPosition()\n      nObjetosActualE2[i] = #(zona.getObjects())\n    end\n\n    -- FLORES\n    salidaF1 = {}\n    salidaF2 = {}\n\n    for i, zona in pairs(zonasFloresE1) do\n      posicionZonaF1.i = zona.getPosition()\n      nObjetosActualF1[i] = #(zona.getObjects())\n      carta_actualF1[i] = 'no_flor'\n      salidaF1[i] = {}\n    end\n    for i, zona in pairs(zonasFloresE2) do\n      posicionZonaF2.i = zona.getPosition()\n      nObjetosActualF2[i] = #(zona.getObjects())\n      carta_actualF1[i] = 'no_flor'\n      salidaF2[i] = {}\n    end\n\n    for i, zona in pairs(zonasFloresE1) do\n      salidaF1[i][1] = nObjetosActualF1[i]\n      salidaF1[i][2] = carta_actualF1[i]\n    end\n    for i, zona in pairs(zonasFloresE2) do\n      salidaF2[i][1] = nObjetosActualF2[i]\n      salidaF2[i][2] = carta_actualF2[i]\n    end\n\n\nend\n\nfunction onUpdate()\n\n  -- FLORES\n  for i,zona in ipairs(zonasFloresE1) do\n    salidaF1[i] = colocarFloresEnZona(salidaF1[i],zona,1)\n  end\n  for i,zona in ipairs(zonasFloresE2) do\n    salidaF2[i] = colocarFloresEnZona(salidaF2[i],zona,2)\n  end\n  -- CANASTAS\n  for i,zona in ipairs(zonasCanastaE1) do\n    nObjetosActualE1[i] = colocaCartasEnZona(nObjetosActualE1[i],zona)\n  end\n  for i,zona in ipairs(zonasCanastaE2) do\n    nObjetosActualE2[i] = colocaCartasEnZona(nObjetosActualE2[i],zona)\n  end\n\nend",
   "LuaScriptState": "",
   "MusicPlayer": {
     "RepeatSong": false,
@@ -77,7 +77,7 @@
         "Color": "Red",
         "Transform": {
           "posX": 0.002922531,
-          "posY": 5.70181561,
+          "posY": 5.71331024,
           "posZ": -28.566576,
           "rotX": 0.0,
           "rotY": 0.0,
@@ -91,35 +91,35 @@
         "Color": "Yellow",
         "Transform": {
           "posX": -28.6376839,
-          "posY": 5.70181561,
+          "posY": 5.71331024,
           "posZ": 0.0,
           "rotX": 0.0,
           "rotY": 90.0,
           "rotZ": 0.0,
-          "scaleX": 9.514588,
+          "scaleX": 9.51466751,
           "scaleY": 6.6973877,
-          "scaleZ": 3.57235885
+          "scaleZ": 3.57240081
         }
       },
       {
         "Color": "Blue",
         "Transform": {
           "posX": 28.6145115,
-          "posY": 5.70181561,
+          "posY": 5.71331024,
           "posZ": 0.0,
           "rotX": 0.0,
           "rotY": 270.0,
           "rotZ": 0.0,
-          "scaleX": 9.51702,
+          "scaleX": 9.5171,
           "scaleY": 6.6973877,
-          "scaleZ": 3.57211614
+          "scaleZ": 3.572157
         }
       },
       {
         "Color": "Green",
         "Transform": {
           "posX": 0.0,
-          "posY": 5.70181561,
+          "posY": 5.71331024,
           "posZ": 28.6732559,
           "rotX": 0.0,
           "rotY": 180.0,
@@ -185,7 +185,7 @@
       "Name": "Counter",
       "Transform": {
         "posX": 4.00274563,
-        "posY": 0.33,
+        "posY": 0.330000043,
         "posZ": -18.600441,
         "rotX": 2.31539047E-06,
         "rotY": 270.0,
@@ -252,7 +252,7 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "Counter": {
-        "value": 0
+        "value": 100
       },
       "XmlUI": "",
       "LuaScript": "",
@@ -595,12 +595,12 @@
     {
       "Name": "Deck",
       "Transform": {
-        "posX": 0.318192959,
+        "posX": 0.3181931,
         "posY": 1.013473,
-        "posZ": 0.5288942,
-        "rotX": -1.2718491E-06,
+        "posZ": 0.5288941,
+        "rotX": 1.76028635E-07,
         "rotY": 89.98503,
-        "rotZ": 1.70085173E-07,
+        "rotZ": 5.79346647E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -1043,7 +1043,7 @@
         "posZ": -24.0740376,
         "rotX": -8.434916E-06,
         "rotY": 0.009587197,
-        "rotZ": -7.67078063E-07,
+        "rotZ": -7.670782E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -3615,9 +3615,9 @@
         "posX": 3.2599597,
         "posY": 1.0297507,
         "posZ": -7.13926172,
-        "rotX": -8.89267E-07,
+        "rotX": -7.964542E-07,
         "rotY": 89.97925,
-        "rotZ": 8.840745E-07,
+        "rotZ": 1.06534264E-06,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -3862,9 +3862,9 @@
         "posX": 3.58568621,
         "posY": 1.01347291,
         "posZ": 1.424564,
-        "rotX": -3.58623851E-07,
+        "rotX": -1.96816842E-07,
         "rotY": 90.0147,
-        "rotZ": 1.383535E-07,
+        "rotZ": -1.095575E-06,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -4302,12 +4302,12 @@
     {
       "Name": "Deck",
       "Transform": {
-        "posX": 0.246283129,
-        "posY": 1.02975059,
+        "posX": 0.246283159,
+        "posY": 1.0297507,
         "posZ": 5.7397337,
-        "rotX": -8.277141E-07,
+        "rotX": -4.36931685E-07,
         "rotY": 90.00534,
-        "rotZ": 4.938969E-09,
+        "rotZ": -1.00161253E-06,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -4549,210 +4549,12 @@
     {
       "Name": "Deck",
       "Transform": {
-        "posX": -3.24867535,
-        "posY": 1.09327376,
-        "posZ": 4.94939566,
-        "rotX": 359.972076,
-        "rotY": 89.95772,
-        "rotZ": 3.51244116,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 0.713235259,
-        "g": 0.713235259,
-        "b": 0.713235259
-      },
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": false,
-      "SidewaysCard": false,
-      "DeckIDs": [
-        115,
-        102,
-        115
-      ],
-      "CustomDeck": {
-        "1": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
-          "NumWidth": 10,
-          "NumHeight": 7,
-          "BackIsHidden": false,
-          "UniqueBack": false
-        }
-      },
-      "XmlUI": "",
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "ContainedObjects": [
-        {
-          "Name": "Card",
-          "Transform": {
-            "posX": 4.542876,
-            "posY": 1.031708,
-            "posZ": 9.375702,
-            "rotX": 0.000125910243,
-            "rotY": 90.02916,
-            "rotZ": -0.000402993668,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "3r",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 115,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
-              "NumWidth": 10,
-              "NumHeight": 7,
-              "BackIsHidden": false,
-              "UniqueBack": false
-            }
-          },
-          "XmlUI": "",
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "GUID": "daf3ff"
-        },
-        {
-          "Name": "Card",
-          "Transform": {
-            "posX": 4.435228,
-            "posY": 1.17148125,
-            "posZ": 8.919877,
-            "rotX": 0.006138396,
-            "rotY": 90.02895,
-            "rotZ": 359.9608,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "3c",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 102,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
-              "NumWidth": 10,
-              "NumHeight": 7,
-              "BackIsHidden": false,
-              "UniqueBack": false
-            }
-          },
-          "XmlUI": "",
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "GUID": "484321"
-        },
-        {
-          "Name": "Card",
-          "Transform": {
-            "posX": -3.398602,
-            "posY": 1.253343,
-            "posZ": 4.6134367,
-            "rotX": 358.179871,
-            "rotY": 89.94543,
-            "rotZ": 0.451415062,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "3r",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 115,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
-              "NumWidth": 10,
-              "NumHeight": 7,
-              "BackIsHidden": false,
-              "UniqueBack": false
-            }
-          },
-          "XmlUI": "",
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "GUID": "daf3ff"
-        }
-      ],
-      "GUID": "5a0243"
-    },
-    {
-      "Name": "Deck",
-      "Transform": {
         "posX": 3.5500493,
         "posY": 1.013473,
         "posZ": -1.28643727,
-        "rotX": -1.2819811E-06,
+        "rotX": -1.32506364E-06,
         "rotY": 90.01885,
-        "rotZ": 4.12359981E-07,
+        "rotZ": 5.56022655E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -5193,9 +4995,9 @@
         "posX": -1.96069479,
         "posY": 1.0297507,
         "posZ": 24.0754719,
-        "rotX": 1.37884783E-07,
+        "rotX": 1.30292321E-07,
         "rotY": 90.0285339,
-        "rotZ": -1.01382614E-06,
+        "rotZ": -1.04317394E-06,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -5440,9 +5242,9 @@
         "posX": 2.20500731,
         "posY": 1.0297507,
         "posZ": 24.40672,
-        "rotX": 5.91203161E-07,
+        "rotX": -7.460442E-07,
         "rotY": 90.03432,
-        "rotZ": 1.98718908E-07,
+        "rotZ": -9.34175659E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -5773,7 +5575,7 @@
       "Name": "Counter",
       "Transform": {
         "posX": -0.0510496162,
-        "posY": 0.94125,
+        "posY": 0.9412501,
         "posZ": -21.3995781,
         "rotX": -7.316679E-07,
         "rotY": -0.00133017125,
@@ -5888,9 +5690,9 @@
         "posX": 4.28957367,
         "posY": 1.013473,
         "posZ": -3.74994659,
-        "rotX": -9.192282E-07,
+        "rotX": 5.088344E-07,
         "rotY": 89.97252,
-        "rotZ": -5.18382535E-07,
+        "rotZ": 5.181797E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -6331,9 +6133,9 @@
         "posX": -3.824457,
         "posY": 1.01347291,
         "posZ": -5.96878958,
-        "rotX": -3.972415E-07,
+        "rotX": -3.54462856E-07,
         "rotY": 89.94343,
-        "rotZ": 1.45308331E-06,
+        "rotZ": -1.213045E-06,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -6774,9 +6576,9 @@
         "posX": 2.77124119,
         "posY": 1.03524232,
         "posZ": -10.0960674,
-        "rotX": 1.45067514E-08,
+        "rotX": -4.90244858E-08,
         "rotY": 90.131546,
-        "rotZ": -2.75441266E-07,
+        "rotZ": -3.765588E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -7168,9 +6970,9 @@
         "posX": -3.72539234,
         "posY": 1.013473,
         "posZ": -8.288231,
-        "rotX": -1.49063823E-07,
+        "rotX": -1.71675907E-07,
         "rotY": 90.03266,
-        "rotZ": 1.60173926E-07,
+        "rotZ": 8.028723E-08,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -7609,11 +7411,11 @@
       "Name": "Deck",
       "Transform": {
         "posX": -4.183997,
-        "posY": 1.01347291,
+        "posY": 1.013473,
         "posZ": -2.48578215,
-        "rotX": 4.2101226E-07,
+        "rotX": 7.589989E-07,
         "rotY": 269.947327,
-        "rotZ": -1.675231E-06,
+        "rotZ": 1.87823488E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -8052,11 +7854,11 @@
       "Name": "Deck",
       "Transform": {
         "posX": -4.577815,
-        "posY": 1.01347291,
+        "posY": 1.03524232,
         "posZ": 1.25091636,
-        "rotX": -1.286741E-06,
+        "rotX": -1.03353318E-06,
         "rotY": 269.999,
-        "rotZ": 9.388423E-07,
+        "rotZ": -4.21578719E-08,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -8087,8 +7889,7 @@
         100,
         126,
         126,
-        113,
-        139
+        113
       ],
       "CustomDeck": {
         "1": {
@@ -8439,54 +8240,6 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "GUID": "c04826"
-        },
-        {
-          "Name": "Card",
-          "Transform": {
-            "posX": -4.41895866,
-            "posY": 1.20813274,
-            "posZ": 1.163534,
-            "rotX": 0.0008079105,
-            "rotY": 269.9779,
-            "rotZ": -0.00116508489,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Ap",
-          "Description": "20",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 139,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
-              "NumWidth": 10,
-              "NumHeight": 7,
-              "BackIsHidden": false,
-              "UniqueBack": false
-            }
-          },
-          "XmlUI": "",
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "GUID": "91e585"
         }
       ],
       "GUID": "adaa0c"
@@ -8494,12 +8247,12 @@
     {
       "Name": "Deck",
       "Transform": {
-        "posX": 3.93755746,
-        "posY": 1.01347291,
+        "posX": 3.9375577,
+        "posY": 1.013473,
         "posZ": 4.55086327,
-        "rotX": 5.03213357E-07,
+        "rotX": -1.15054938E-07,
         "rotY": 90.00035,
-        "rotZ": 1.42161275E-06,
+        "rotZ": 2.50075232E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -8937,12 +8690,12 @@
     {
       "Name": "Deck",
       "Transform": {
-        "posX": -0.260755837,
-        "posY": 1.01345515,
-        "posZ": 3.027633,
-        "rotX": 0.000329483883,
-        "rotY": 89.97253,
-        "rotZ": -0.000833849539,
+        "posX": -0.260720432,
+        "posY": 1.013473,
+        "posZ": 3.02774,
+        "rotX": -2.83102253E-07,
+        "rotY": 89.97059,
+        "rotZ": 1.7101836E-06,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -9380,12 +9133,12 @@
     {
       "Name": "Deck",
       "Transform": {
-        "posX": 0.06213749,
+        "posX": 0.0621375144,
         "posY": 1.0297507,
         "posZ": -2.989466,
-        "rotX": -6.90939657E-07,
+        "rotX": 3.46199528E-07,
         "rotY": 269.989777,
-        "rotZ": -4.606962E-07,
+        "rotZ": -4.85169E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -9627,12 +9380,12 @@
     {
       "Name": "Card",
       "Transform": {
-        "posX": 10.4243736,
-        "posY": 1.0317136,
-        "posZ": -12.07445,
-        "rotX": 8.294664E-07,
-        "rotY": 90.01116,
-        "rotZ": -6.27924351E-07,
+        "posX": 8.822074,
+        "posY": 1.03171349,
+        "posZ": -11.3342705,
+        "rotX": 1.27930832E-06,
+        "rotY": 90.0111542,
+        "rotZ": 1.35694813E-06,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -9675,12 +9428,12 @@
     {
       "Name": "Card",
       "Transform": {
-        "posX": 15.4935923,
+        "posX": 1.82181644,
         "posY": 1.0317136,
-        "posZ": -11.8279905,
-        "rotX": -3.96927966E-08,
+        "posZ": -13.2995338,
+        "rotX": -5.24253267E-07,
         "rotY": 270.000031,
-        "rotZ": -2.1785138E-07,
+        "rotZ": 5.05678656E-07,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
@@ -9719,6 +9472,198 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "GUID": "731ac6"
+    },
+    {
+      "Name": "Card",
+      "Transform": {
+        "posX": 14.266757,
+        "posY": 1.0317136,
+        "posZ": -11.169673,
+        "rotX": -6.43951068E-07,
+        "rotY": 270.003357,
+        "rotZ": -1.43843044E-06,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "3r",
+      "Description": "",
+      "GMNotes": "",
+      "ColorDiffuse": {
+        "r": 0.713235259,
+        "g": 0.713235259,
+        "b": 0.713235259
+      },
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "CardID": 115,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "1": {
+          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
+          "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
+          "NumWidth": 10,
+          "NumHeight": 7,
+          "BackIsHidden": false,
+          "UniqueBack": false
+        }
+      },
+      "XmlUI": "",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "GUID": "daf3ff"
+    },
+    {
+      "Name": "Card",
+      "Transform": {
+        "posX": -1.87761939,
+        "posY": 1.0317136,
+        "posZ": 13.1431522,
+        "rotX": -4.238614E-07,
+        "rotY": 89.9955139,
+        "rotZ": -1.99292958E-06,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "3c",
+      "Description": "",
+      "GMNotes": "",
+      "ColorDiffuse": {
+        "r": 0.713235259,
+        "g": 0.713235259,
+        "b": 0.713235259
+      },
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "CardID": 102,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "1": {
+          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
+          "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
+          "NumWidth": 10,
+          "NumHeight": 7,
+          "BackIsHidden": false,
+          "UniqueBack": false
+        }
+      },
+      "XmlUI": "",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "GUID": "484321"
+    },
+    {
+      "Name": "Card",
+      "Transform": {
+        "posX": -4.592951,
+        "posY": 1.0317136,
+        "posZ": 6.93554258,
+        "rotX": 8.61142269E-07,
+        "rotY": 90.00516,
+        "rotZ": 4.21505575E-07,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "3r",
+      "Description": "",
+      "GMNotes": "",
+      "ColorDiffuse": {
+        "r": 0.713235259,
+        "g": 0.713235259,
+        "b": 0.713235259
+      },
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "CardID": 115,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "1": {
+          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
+          "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
+          "NumWidth": 10,
+          "NumHeight": 7,
+          "BackIsHidden": false,
+          "UniqueBack": false
+        }
+      },
+      "XmlUI": "",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "GUID": "8ff8fa"
+    },
+    {
+      "Name": "Card",
+      "Transform": {
+        "posX": -3.37016869,
+        "posY": 1.0317136,
+        "posZ": 9.848953,
+        "rotX": -7.59219461E-07,
+        "rotY": 269.999756,
+        "rotZ": -8.06311959E-07,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Ap",
+      "Description": "20",
+      "GMNotes": "",
+      "ColorDiffuse": {
+        "r": 0.713235259,
+        "g": 0.713235259,
+        "b": 0.713235259
+      },
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "CardID": 139,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "1": {
+          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646488883/941CE60C944B3B94597E4CC31ADF537B4004A3C2/",
+          "BackURL": "http://cloud-3.steamusercontent.com/ugc/1021696076646489586/3C1E4137458B454383FF83B72817B31798F19978/",
+          "NumWidth": 10,
+          "NumHeight": 7,
+          "BackIsHidden": false,
+          "UniqueBack": false
+        }
+      },
+      "XmlUI": "",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "GUID": "91e585"
     }
   ],
   "DecalPallet": [],
